@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import Button from "@mui/material/Button"; // Corrected Button import
-import Input from "@mui/material/Input";
-import { FormControl, FormLabel } from "@mui/material";
+import { Button } from "@mui/material";
+import { TextField } from "@mui/material";
+import { FormLabel } from "@mui/material"; // Corrected import
 import { styled } from "@mui/material/styles";
-import { Circle, DownloadCloud, Palette, Type, XCircle } from "lucide-react";
+import { Circle, DownloadCloud, Palette } from "lucide-react";
 
 // ===============================
 // Constants & Types
@@ -165,7 +165,6 @@ const generateFavicons = async (
     const icoUrl = icoBlob ? URL.createObjectURL(icoBlob) : null;
 
     return { icoUrl, pngUrl, svgUrl, error: null };
-    // ERROR: CHQ: unexpected any. specify a different type
   } catch (error: any) {
     return {
       icoUrl: null,
@@ -190,31 +189,11 @@ const convertPNGToICO = async (pngDataURL: string): Promise<Blob | null> => {
 // Styled Components
 // ===============================
 
-// ERROR: CHQ: theme is defined but never used
-const GradientButton = styled(Button)(({ theme }) => ({
-  background: "linear-gradient(to right, #4f46e5, #8b5cf6)",
-  color: "#fff",
-  padding: "10px 24px",
-  borderRadius: "8px",
-  fontWeight: "semibold",
-  transition: "background 0.3s ease",
-  "&:hover": {
-    background: "linear-gradient(to right, #4338ca, #7e22ce)",
-  },
-  "&:disabled": {
-    opacity: 0.7,
-    cursor: "not-allowed",
-    background: "linear-gradient(to right, #6b7280, #6b7280)",
-  },
-}));
-
-// ERROR: CHQ: No overload matches this call
 const ColorCircle = styled("div")<{ bgcolor: string }>({
   width: "24px",
   height: "24px",
   borderRadius: "50%",
   border: "1px solid #d1d5db",
-  // ERROR: CHQ: parameter proprs implicitly has an any type
   backgroundColor: (props) => props.bgcolor,
 });
 
@@ -328,107 +307,114 @@ const FaviconGeneratorApp = () => {
   // ===============================
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-50 text-gray-900 p-4 md:p-8">
       <div className="max-w-4xl mx-auto space-y-6">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center bg-gradient-to-r from-indigo-400 to-purple-500 text-transparent bg-clip-text">
           Favicon Generator
         </h1>
 
         {/* Input Section */}
-        <div className="bg-gray-900/90 backdrop-blur-md rounded-xl p-4 sm:p-6 space-y-4 sm:space-y-6 border border-gray-800 shadow-lg">
+        <div className="bg-white/90 backdrop-blur-md rounded-xl p-4 sm:p-6 space-y-4 sm:space-y-6 border border-gray-200 shadow-lg">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             {/* Text Input */}
             <div>
-              <FormControl fullWidth>
-                <FormLabel className="text-sm font-medium text-gray-300 mb-1 sm:mb-2">
-                  Text (1-2 characters)
-                </FormLabel>
-                <div className="relative">
-                  <Input
-                    ref={textInputRef}
-                    id="text"
-                    type="text"
-                    value={text}
-                    onChange={handleTextChange}
-                    placeholder="F"
-                    maxLength={2}
-                    className="w-full text-center bg-black/50 text-white border-gray-700 placeholder:text-gray-400"
-                  />
-                  <Type className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                </div>
-              </FormControl>
+              <FormLabel
+                htmlFor="text"
+                className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2"
+              >
+                Text (1-2 characters)
+              </FormLabel>
+              <div className="relative">
+                <TextField
+                  inputRef={textInputRef}
+                  id="text"
+                  type="text"
+                  value={text}
+                  onChange={handleTextChange}
+                  placeholder="F"
+                  //   maxLength={2}
+                  className="w-full text-center bg-white border-gray-300 placeholder:text-gray-500 text-gray-900"
+                />
+              </div>
             </div>
 
             {/* Color Input */}
             <div>
-              <FormControl fullWidth>
-                <FormLabel className="text-sm font-medium text-gray-300 mb-1 sm:mb-2">
-                  Background Color
-                </FormLabel>
-                <div className="relative flex items-center">
-                  <Input
-                    ref={colorInputRef}
-                    id="color"
-                    type="text"
-                    value={color}
-                    onChange={handleColorChange}
-                    className="w-full bg-black/50 text-white border-gray-700 pr-10"
-                    placeholder="#4F46E5"
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => toggleColorPicker("color")}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
-                    title="Choose Color"
-                  >
-                    <Palette className="w-4 h-4" />
-                  </Button>
-                  <ColorCircle
-                    className="absolute right-12 top-1/2 -translate-y-1/2 w-6 h-6"
-                    bgcolor={color}
-                  />
-                </div>
-              </FormControl>
+              <FormLabel
+                htmlFor="color"
+                className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2"
+              >
+                Background Color
+              </FormLabel>
+              <div className="relative flex items-center">
+                <TextField
+                  inputRef={colorInputRef}
+                  id="color"
+                  type="text"
+                  value={color}
+                  onChange={handleColorChange}
+                  className="w-full bg-white border-gray-300 pr-10 text-gray-900"
+                  placeholder="#4F46E5"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="small"
+                  onClick={() => toggleColorPicker("color")}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-indigo-600"
+                  title="Choose Color"
+                >
+                  <Palette className="w-4 h-4" />
+                </Button>
+                <ColorCircle
+                  className="absolute right-12 top-1/2 -translate-y-1/2 w-6 h-6"
+                  bgcolor={color}
+                />
+              </div>
             </div>
 
             {/* Text Color Input */}
             <div>
-              <FormControl fullWidth>
-                <FormLabel className="text-sm font-medium text-gray-300 mb-1 sm:mb-2">
-                  Text Color
-                </FormLabel>
-                <div className="relative flex items-center">
-                  <Input
-                    ref={textColorInputRef}
-                    id="textColor"
-                    type="text"
-                    value={textColor}
-                    onChange={handleTextColorChange}
-                    className="w-full bg-black/50 text-white border-gray-700 pr-10"
-                    placeholder="#FFFFFF"
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => toggleColorPicker("textColor")}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
-                    title="Choose Text Color"
-                  >
-                    <Palette className="w-4 h-4" />
-                  </Button>
-                  <ColorCircle
-                    className="absolute right-12 top-1/2 -translate-y-1/2 w-6 h-6"
-                    bgcolor={textColor}
-                  />
-                </div>
-              </FormControl>
+              <FormLabel
+                htmlFor="textColor"
+                className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2"
+              >
+                Text Color
+              </FormLabel>
+              <div className="relative flex items-center">
+                <TextField
+                  inputRef={textColorInputRef}
+                  id="textColor"
+                  type="text"
+                  value={textColor}
+                  onChange={handleTextColorChange}
+                  className="w-full bg-white border-gray-300 pr-10 text-gray-900"
+                  placeholder="#FFFFFF"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="small"
+                  onClick={() => toggleColorPicker("textColor")}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-indigo-600"
+                  title="Choose Text Color"
+                >
+                  <Palette className="w-4 h-4" />
+                </Button>
+                <ColorCircle
+                  className="absolute right-12 top-1/2 -translate-y-1/2 w-6 h-6"
+                  bgcolor={textColor}
+                />
+              </div>
             </div>
           </div>
 
-          <GradientButton onClick={handleGenerateFavicon} disabled={loading}>
+          <Button
+            onClick={handleGenerateFavicon}
+            disabled={loading}
+            variant="contained"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white"
+          >
             {loading ? (
               <>Generating...</>
             ) : (
@@ -437,7 +423,7 @@ const FaviconGeneratorApp = () => {
                 Generate Favicons
               </>
             )}
-          </GradientButton>
+          </Button>
         </div>
 
         {/* Output Section */}
@@ -445,13 +431,13 @@ const FaviconGeneratorApp = () => {
           faviconUrls.pngUrl ||
           faviconUrls.svgUrl ||
           faviconUrls.error) && (
-          <div className="bg-gray-900/90 backdrop-blur-md rounded-xl p-4 sm:p-6 space-y-4 sm:space-y-6 border border-gray-800 shadow-lg">
-            <h2 className="text-xl sm:text-2xl font-semibold text-gray-200">
+          <div className="bg-white/90 backdrop-blur-md rounded-xl p-4 sm:p-6 space-y-4 sm:space-y-6 border border-gray-200 shadow-lg">
+            <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">
               Results
             </h2>
             {faviconUrls.error ? (
-              <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-md flex items-center">
-                <XCircle className="mr-2 w-5 h-5" />
+              <div className="bg-red-100 border border-red-300 text-red-700 p-3 rounded-md flex items-center">
+                <XCircle className="mr-2 w-5 h-5 text-red-500" />
                 {faviconUrls.error}
               </div>
             ) : (
@@ -459,20 +445,20 @@ const FaviconGeneratorApp = () => {
                 {/* ICO Output */}
                 {faviconUrls.icoUrl && (
                   <div className="space-y-2">
-                    <div className="w-16 h-16 bg-gray-800 rounded-md flex items-center justify-center border border-gray-700">
+                    <div className="w-16 h-16 bg-gray-100 rounded-md flex items-center justify-center border border-gray-300">
                       <img
                         src={faviconUrls.icoUrl}
                         alt="Favicon (ICO)"
                         className="w-8 h-8"
                       />
                     </div>
-                    <p className="text-sm text-gray-400">Favicon (ICO)</p>
+                    <p className="text-sm text-gray-500">Favicon (ICO)</p>
                     <Button
                       onClick={() =>
                         handleDownload(faviconUrls.icoUrl, "favicon.ico")
                       }
-                      className="bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 hover:text-blue-300 transition-colors duration-200 w-full"
                       variant="outlined"
+                      className="w-full text-indigo-600 hover:text-white hover:bg-indigo-600 border-indigo-300"
                     >
                       <DownloadCloud className="mr-2 w-4 h-4" />
                       Download ICO
@@ -483,20 +469,20 @@ const FaviconGeneratorApp = () => {
                 {/* PNG Output */}
                 {faviconUrls.pngUrl && (
                   <div className="space-y-2">
-                    <div className="w-16 h-16 bg-gray-800 rounded-md flex items-center justify-center border border-gray-700">
+                    <div className="w-16 h-16 bg-gray-100 rounded-md flex items-center justify-center border border-gray-300">
                       <img
                         src={faviconUrls.pngUrl}
                         alt="Favicon (PNG)"
                         className="w-8 h-8"
                       />
                     </div>
-                    <p className="text-sm text-gray-400">Favicon (PNG)</p>
+                    <p className="text-sm text-gray-500">Favicon (PNG)</p>
                     <Button
                       onClick={() =>
                         handleDownload(faviconUrls.pngUrl, "favicon.png")
                       }
-                      className="bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 hover:text-blue-300 transition-colors duration-200 w-full"
                       variant="outlined"
+                      className="w-full text-indigo-600 hover:text-white hover:bg-indigo-600 border-indigo-300"
                     >
                       <DownloadCloud className="mr-2 w-4 h-4" />
                       Download PNG
@@ -507,7 +493,7 @@ const FaviconGeneratorApp = () => {
                 {/* SVG Output */}
                 {faviconUrls.svgUrl && (
                   <div className="space-y-2">
-                    <div className="w-16 h-16 bg-gray-800 rounded-md flex items-center justify-center border border-gray-700">
+                    <div className="w-16 h-16 bg-gray-100 rounded-md flex items-center justify-center border border-gray-300">
                       {/* Display the SVG directly, or use an img tag.  */}
                       <img
                         src={faviconUrls.svgUrl}
@@ -515,13 +501,13 @@ const FaviconGeneratorApp = () => {
                         className="w-8 h-8"
                       />
                     </div>
-                    <p className="text-sm text-gray-400">Favicon (SVG)</p>
+                    <p className="text-sm text-gray-500">Favicon (SVG)</p>
                     <Button
                       onClick={() =>
                         handleDownload(faviconUrls.svgUrl, "favicon.svg")
                       }
-                      className="bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 hover:text-blue-300 transition-colors duration-200 w-full"
                       variant="outlined"
+                      className="w-full text-indigo-600 hover:text-white hover:bg-indigo-600 border-indigo-300"
                     >
                       <DownloadCloud className="mr-2 w-4 h-4" />
                       Download SVG
@@ -536,8 +522,8 @@ const FaviconGeneratorApp = () => {
       {/* Color Picker (Popup) */}
       {showColorPicker && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-          <div className="bg-gray-800 rounded-xl p-4 shadow-2xl border border-gray-700 max-w-[90%] w-[300px]">
-            <h2 className="text-lg font-semibold mb-4 text-gray-200">
+          <div className="bg-white rounded-xl p-4 shadow-2xl border border-gray-200 max-w-[90%] w-[300px]">
+            <h2 className="text-lg font-semibold mb-4 text-gray-900">
               Choose {showColorPicker === "color" ? "Background" : "Text"} Color
             </h2>
             <div className="grid grid-cols-5 gap-2">
@@ -575,7 +561,7 @@ const FaviconGeneratorApp = () => {
                 <button
                   key={c}
                   onClick={() => handleColorSelect(c)}
-                  className={`w-8 h-8 rounded-full transition-all duration-200 border border-gray-700
+                  className={`w-8 h-8 rounded-full transition-all duration-200 border border-gray-300
                                          hover:ring-2 hover:ring-offset-1
                                          hover:ring-${
                                            c === "#FFFFFF" || c === "#F3F4F6"
@@ -633,7 +619,7 @@ const FaviconGeneratorApp = () => {
               <Button
                 variant="outlined"
                 onClick={closeColorPicker}
-                className="text-gray-300 hover:text-white hover:bg-gray-700 border-gray-700"
+                className="text-gray-700 hover:text-gray-900 hover:bg-gray-100 border-gray-300"
               >
                 Cancel
               </Button>
