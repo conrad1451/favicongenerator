@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
+import Button from "@mui/material/Button"; // Corrected Button import
+import Input from "@mui/material/Input";
+import { FormControl, FormLabel } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import { Circle, DownloadCloud, Palette, Type, XCircle } from "lucide-react";
 
 // ===============================
@@ -165,6 +165,7 @@ const generateFavicons = async (
     const icoUrl = icoBlob ? URL.createObjectURL(icoBlob) : null;
 
     return { icoUrl, pngUrl, svgUrl, error: null };
+    // ERROR: CHQ: unexpected any. specify a different type
   } catch (error: any) {
     return {
       icoUrl: null,
@@ -186,8 +187,36 @@ const convertPNGToICO = async (pngDataURL: string): Promise<Blob | null> => {
 };
 
 // ===============================
-// React Component
+// Styled Components
 // ===============================
+
+// ERROR: CHQ: theme is defined but never used
+const GradientButton = styled(Button)(({ theme }) => ({
+  background: "linear-gradient(to right, #4f46e5, #8b5cf6)",
+  color: "#fff",
+  padding: "10px 24px",
+  borderRadius: "8px",
+  fontWeight: "semibold",
+  transition: "background 0.3s ease",
+  "&:hover": {
+    background: "linear-gradient(to right, #4338ca, #7e22ce)",
+  },
+  "&:disabled": {
+    opacity: 0.7,
+    cursor: "not-allowed",
+    background: "linear-gradient(to right, #6b7280, #6b7280)",
+  },
+}));
+
+// ERROR: CHQ: No overload matches this call
+const ColorCircle = styled("div")<{ bgcolor: string }>({
+  width: "24px",
+  height: "24px",
+  borderRadius: "50%",
+  border: "1px solid #d1d5db",
+  // ERROR: CHQ: parameter proprs implicitly has an any type
+  backgroundColor: (props) => props.bgcolor,
+});
 
 const FaviconGeneratorApp = () => {
   // ===============================
@@ -310,106 +339,96 @@ const FaviconGeneratorApp = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             {/* Text Input */}
             <div>
-              <Label
-                htmlFor="text"
-                className="block text-sm font-medium text-gray-300 mb-1 sm:mb-2"
-              >
-                Text (1-2 characters)
-              </Label>
-              <div className="relative">
-                <Input
-                  ref={textInputRef}
-                  id="text"
-                  type="text"
-                  value={text}
-                  onChange={handleTextChange}
-                  placeholder="F"
-                  maxLength={2}
-                  className="w-full text-center bg-black/50 text-white border-gray-700 placeholder:text-gray-400"
-                />
-                <Type className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-              </div>
+              <FormControl fullWidth>
+                <FormLabel className="text-sm font-medium text-gray-300 mb-1 sm:mb-2">
+                  Text (1-2 characters)
+                </FormLabel>
+                <div className="relative">
+                  <Input
+                    ref={textInputRef}
+                    id="text"
+                    type="text"
+                    value={text}
+                    onChange={handleTextChange}
+                    placeholder="F"
+                    maxLength={2}
+                    className="w-full text-center bg-black/50 text-white border-gray-700 placeholder:text-gray-400"
+                  />
+                  <Type className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                </div>
+              </FormControl>
             </div>
 
             {/* Color Input */}
             <div>
-              <Label
-                htmlFor="color"
-                className="block text-sm font-medium text-gray-300 mb-1 sm:mb-2"
-              >
-                Background Color
-              </Label>
-              <div className="relative flex items-center">
-                <Input
-                  ref={colorInputRef}
-                  id="color"
-                  type="text"
-                  value={color}
-                  onChange={handleColorChange}
-                  className="w-full bg-black/50 text-white border-gray-700 pr-10"
-                  placeholder="#4F46E5"
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => toggleColorPicker("color")}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
-                  title="Choose Color"
-                >
-                  <Palette className="w-4 h-4" />
-                </Button>
-                <div
-                  className="absolute right-12 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full border border-gray-700"
-                  style={{ backgroundColor: color }}
-                />
-              </div>
+              <FormControl fullWidth>
+                <FormLabel className="text-sm font-medium text-gray-300 mb-1 sm:mb-2">
+                  Background Color
+                </FormLabel>
+                <div className="relative flex items-center">
+                  <Input
+                    ref={colorInputRef}
+                    id="color"
+                    type="text"
+                    value={color}
+                    onChange={handleColorChange}
+                    className="w-full bg-black/50 text-white border-gray-700 pr-10"
+                    placeholder="#4F46E5"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => toggleColorPicker("color")}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                    title="Choose Color"
+                  >
+                    <Palette className="w-4 h-4" />
+                  </Button>
+                  <ColorCircle
+                    className="absolute right-12 top-1/2 -translate-y-1/2 w-6 h-6"
+                    bgcolor={color}
+                  />
+                </div>
+              </FormControl>
             </div>
 
             {/* Text Color Input */}
             <div>
-              <Label
-                htmlFor="textColor"
-                className="block text-sm font-medium text-gray-300 mb-1 sm:mb-2"
-              >
-                Text Color
-              </Label>
-              <div className="relative flex items-center">
-                <Input
-                  ref={textColorInputRef}
-                  id="textColor"
-                  type="text"
-                  value={textColor}
-                  onChange={handleTextColorChange}
-                  className="w-full bg-black/50 text-white border-gray-700 pr-10"
-                  placeholder="#FFFFFF"
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => toggleColorPicker("textColor")}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
-                  title="Choose Text Color"
-                >
-                  <Palette className="w-4 h-4" />
-                </Button>
-                <div
-                  className="absolute right-12 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full border border-gray-700"
-                  style={{ backgroundColor: textColor }}
-                />
-              </div>
+              <FormControl fullWidth>
+                <FormLabel className="text-sm font-medium text-gray-300 mb-1 sm:mb-2">
+                  Text Color
+                </FormLabel>
+                <div className="relative flex items-center">
+                  <Input
+                    ref={textColorInputRef}
+                    id="textColor"
+                    type="text"
+                    value={textColor}
+                    onChange={handleTextColorChange}
+                    className="w-full bg-black/50 text-white border-gray-700 pr-10"
+                    placeholder="#FFFFFF"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => toggleColorPicker("textColor")}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                    title="Choose Text Color"
+                  >
+                    <Palette className="w-4 h-4" />
+                  </Button>
+                  <ColorCircle
+                    className="absolute right-12 top-1/2 -translate-y-1/2 w-6 h-6"
+                    bgcolor={textColor}
+                  />
+                </div>
+              </FormControl>
             </div>
           </div>
 
-          <Button
-            onClick={handleGenerateFavicon}
-            disabled={loading}
-            className={cn(
-              "w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2.5 px-6 rounded-lg transition-colors duration-300",
-              loading && "opacity-70 cursor-not-allowed"
-            )}
-          >
+          <GradientButton onClick={handleGenerateFavicon} disabled={loading}>
             {loading ? (
               <>Generating...</>
             ) : (
@@ -418,7 +437,7 @@ const FaviconGeneratorApp = () => {
                 Generate Favicons
               </>
             )}
-          </Button>
+          </GradientButton>
         </div>
 
         {/* Output Section */}
@@ -453,7 +472,7 @@ const FaviconGeneratorApp = () => {
                         handleDownload(faviconUrls.icoUrl, "favicon.ico")
                       }
                       className="bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 hover:text-blue-300 transition-colors duration-200 w-full"
-                      variant="outline"
+                      variant="outlined"
                     >
                       <DownloadCloud className="mr-2 w-4 h-4" />
                       Download ICO
@@ -477,7 +496,7 @@ const FaviconGeneratorApp = () => {
                         handleDownload(faviconUrls.pngUrl, "favicon.png")
                       }
                       className="bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 hover:text-blue-300 transition-colors duration-200 w-full"
-                      variant="outline"
+                      variant="outlined"
                     >
                       <DownloadCloud className="mr-2 w-4 h-4" />
                       Download PNG
@@ -502,7 +521,7 @@ const FaviconGeneratorApp = () => {
                         handleDownload(faviconUrls.svgUrl, "favicon.svg")
                       }
                       className="bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 hover:text-blue-300 transition-colors duration-200 w-full"
-                      variant="outline"
+                      variant="outlined"
                     >
                       <DownloadCloud className="mr-2 w-4 h-4" />
                       Download SVG
@@ -556,57 +575,55 @@ const FaviconGeneratorApp = () => {
                 <button
                   key={c}
                   onClick={() => handleColorSelect(c)}
-                  className={cn(
-                    "w-8 h-8 rounded-full",
-                    "transition-all duration-200",
-                    "border border-gray-700",
-                    "hover:ring-2 hover:ring-offset-1",
-                    `hover:ring-${
-                      c === "#FFFFFF" || c === "#F3F4F6"
-                        ? "gray"
-                        : c === "#000000" || c === "#1F2937"
-                        ? "gray"
-                        : c === "#EF4444"
-                        ? "red"
-                        : c === "#F97316"
-                        ? "orange"
-                        : c === "#F59E0B"
-                        ? "amber"
-                        : c === "#EAB308"
-                        ? "yellow"
-                        : c === "#84CC16"
-                        ? "lime"
-                        : c === "#22C55E"
-                        ? "green"
-                        : c === "#10B981"
-                        ? "emerald"
-                        : c === "#06B68A"
-                        ? "teal"
-                        : c === "#0891B2"
-                        ? "cyan"
-                        : c === "#0E7490"
-                        ? "sky"
-                        : c === "#3B82F6"
-                        ? "blue"
-                        : c === "#6366F1"
-                        ? "indigo"
-                        : c === "#8B5CF6"
-                        ? "violet"
-                        : c === "#A855F7"
-                        ? "purple"
-                        : c === "#D946EF"
-                        ? "fuchsia"
-                        : c === "#EC4899"
-                        ? "pink"
-                        : "rose"
-                    }-500`,
-
-                    c === "#FFFFFF"
-                      ? "ring-gray-500"
-                      : c === "#000000"
-                      ? "ring-gray-500"
-                      : ""
-                  )}
+                  className={`w-8 h-8 rounded-full transition-all duration-200 border border-gray-700
+                                         hover:ring-2 hover:ring-offset-1
+                                         hover:ring-${
+                                           c === "#FFFFFF" || c === "#F3F4F6"
+                                             ? "gray"
+                                             : c === "#000000" ||
+                                               c === "#1F2937"
+                                             ? "gray"
+                                             : c === "#EF4444"
+                                             ? "red"
+                                             : c === "#F97316"
+                                             ? "orange"
+                                             : c === "#F59E0B"
+                                             ? "amber"
+                                             : c === "#EAB308"
+                                             ? "yellow"
+                                             : c === "#84CC16"
+                                             ? "lime"
+                                             : c === "#22C55E"
+                                             ? "green"
+                                             : c === "#10B981"
+                                             ? "emerald"
+                                             : c === "#06B68A"
+                                             ? "teal"
+                                             : c === "#0891B2"
+                                             ? "cyan"
+                                             : c === "#0E7490"
+                                             ? "sky"
+                                             : c === "#3B82F6"
+                                             ? "blue"
+                                             : c === "#6366F1"
+                                             ? "indigo"
+                                             : c === "#8B5CF6"
+                                             ? "violet"
+                                             : c === "#A855F7"
+                                             ? "purple"
+                                             : c === "#D946EF"
+                                             ? "fuchsia"
+                                             : c === "#EC4899"
+                                             ? "pink"
+                                             : "rose"
+                                         }-500
+                                         ${
+                                           c === "#FFFFFF"
+                                             ? "ring-gray-500"
+                                             : c === "#000000"
+                                             ? "ring-gray-500"
+                                             : ""
+                                         }`}
                   style={{ backgroundColor: c }}
                   title={c}
                 />
@@ -614,7 +631,7 @@ const FaviconGeneratorApp = () => {
             </div>
             <div className="mt-4 flex justify-end">
               <Button
-                variant="outline"
+                variant="outlined"
                 onClick={closeColorPicker}
                 className="text-gray-300 hover:text-white hover:bg-gray-700 border-gray-700"
               >
