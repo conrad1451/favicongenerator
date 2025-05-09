@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@mui/material";
 import { TextField } from "@mui/material";
-import { FormLabel } from "@mui/material"; // Corrected import
+import { FormLabel } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { Circle, DownloadCloud, Palette } from "lucide-react";
+import { Circle, DownloadCloud, Palette, XCircle } from "lucide-react";
 
 // ===============================
 // Constants & Types
@@ -180,9 +180,14 @@ const convertPNGToICO = async (pngDataURL: string): Promise<Blob | null> => {
   // In a real application, you would use a library like 'icotool' or a server-side
   // endpoint to convert the PNG to ICO format.  This is a simplified mock.
 
-  const response = await fetch(pngDataURL);
-  const pngBlob = await response.blob();
-  return pngBlob;
+  try {
+    const response = await fetch(pngDataURL);
+    const pngBlob = await response.blob();
+    return pngBlob;
+  } catch (error) {
+    console.error("Error converting PNG to ICO (mock):", error);
+    return null; // Important: Handle the error and return null
+  }
 };
 
 // ===============================
